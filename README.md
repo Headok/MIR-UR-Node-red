@@ -1,5 +1,5 @@
 # MIR-UR-Node-red
-Este repositorio contiene todo lo necesario para automatizar la recogida de gavetas desde un punto, y dejarlas en su correspondiente posición en un almacén, mediante el uso de un MIR100 y un UR5.
+Este repositorio contiene todo lo necesario para automatizar la recogida de gavetas desde un punto, y dejarlas en su correspondiente posición en un almacén, mediante el uso de un MIR100. un UR5 y una pinza impresa con filamento.
 ![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/60793ad3-2bda-414e-be08-b394ea9562f7)
 
 El MIR y el UR5 se comunican mediante el urcap desarrollado por MIR (no es 100% estable).
@@ -34,7 +34,13 @@ https://portal.influxdata.com/downloads/
 ### Grafana
 https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
 
-
+##Scritp cámara + programa UR + archivo pinza
+### Script cámara
+xxx
+### Programa UR
+xxx
+### Archivo pinza
+xxx
 
 
 
