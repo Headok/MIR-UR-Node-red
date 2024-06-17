@@ -8,11 +8,29 @@ Para no mandar información repetida/errónea, se comprueba que el nº de missi�
 A su vez, para poder colocar una gaveta encima de otra en la misma posición, se lleva un control del número de gavetas apiladas.
 También incluye un flujo de trabajo para recoger gavetas vacías en un puesto de trabajo y dejarlas para la recogida de suministradores.
 Por último, se ha automatizado en jira que al mover las etiquetas de una columna a otra
+Todo esto se encuentra en proceso_codigo_v1_5.json
 
-##Flujos secundarios
+## Flujos secundarios
 Existen otros flujos secundarios para realizar otro tipo de tareas.
-1. Flujo para guardar info en influxdb (para posteriormente visualizar con grafana las distintas misiones realizadas, así como el tiempo de ejeción, batería, etc)
-2. Flujo para crear nuevas posiciones en el csv.
-3. Flujo para informar de retirada o añadido de gavetas manual.
+1. MIR_v3.1: Flujo para guardar info en influxdb (para posteriormente visualizar con grafana las distintas misiones realizadas, así como el tiempo de ejeción, batería, etc)
+2. resta-altura: Flujo para informar de retirada o añadido de gavetas manual.
+3. nueva_gaveta_almacen: Flujo para crear nuevas posiciones en el csv.
+4. codigo_altura_v1_3: Flujo para comprobar las gavetas con un mismo código apiladas en una posición.
 
+## Instalaciones
+*Todo funciona sobre ubuntu 22.04, puede hacerse sobre Windows, pero de cara a futuro, se considera más óptimo Linux.
+**Se recomienda trabajar sobre un entorno virtual para la instalación de bibliotecas de python si fuera necesario.
+### Node Red
+https://nodered.org/docs/getting-started/local
+### InfluxDBv2
+https://portal.influxdata.com/downloads/
+### Grafana
+https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
+
+
+
+
+
+
+   
 
