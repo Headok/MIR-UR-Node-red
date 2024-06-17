@@ -1,0 +1,866 @@
+[
+    {
+        "id": "6f0ab9c3a4d2e71d",
+        "type": "tab",
+        "label": "Código altura v1.3",
+        "disabled": false,
+        "info": "v1.3 Manda datos en 105, en vez de 103 que mandaba antes.",
+        "env": []
+    },
+    {
+        "id": "27b797c91fdf43f2",
+        "type": "debug",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "CSV",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1270,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "d6ef1110a24dfe49",
+        "type": "http request",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Registro code_id",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/9",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 170,
+        "y": 500,
+        "wires": [
+            [
+                "724934f9c33389c0"
+            ]
+        ]
+    },
+    {
+        "id": "3468c11e6d8e5db8",
+        "type": "inject",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 300,
+        "wires": [
+            [
+                "d6ef1110a24dfe49",
+                "e6aa6105ba17bc0a",
+                "3aba199b51d6f01b",
+                "966794c4dbdab172"
+            ]
+        ]
+    },
+    {
+        "id": "e6aa6105ba17bc0a",
+        "type": "file in",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "CSV alturas",
+        "filename": "/home/sistemas/codigo-alturas/alturas.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 250,
+        "y": 180,
+        "wires": [
+            [
+                "ffb0a849ae97d409"
+            ]
+        ]
+    },
+    {
+        "id": "ffb0a849ae97d409",
+        "type": "csv",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Paso a json",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "codigo, x, y, z, posMIR",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 350,
+        "y": 260,
+        "wires": [
+            [
+                "b9dd5e9cd162bf85"
+            ]
+        ]
+    },
+    {
+        "id": "b9dd5e9cd162bf85",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"csv_alturas\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 180,
+        "wires": [
+            [
+                "4178b8725b6e4d4f"
+            ]
+        ]
+    },
+    {
+        "id": "724934f9c33389c0",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Coger valor",
+        "func": "msg.topic = \"codeid\";\nmsg.payload = msg.payload.value\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 500,
+        "wires": [
+            [
+                "80c7e009e5a5cd54"
+            ]
+        ]
+    },
+    {
+        "id": "4178b8725b6e4d4f",
+        "type": "join",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 590,
+        "y": 260,
+        "wires": [
+            [
+                "273d3a62201ac272"
+            ]
+        ]
+    },
+    {
+        "id": "978856abc3a39116",
+        "type": "rbe",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.status.payload.mission_queue_id",
+        "topi": "topic",
+        "x": 470,
+        "y": 400,
+        "wires": [
+            [
+                "7d58b83caba206ee"
+            ]
+        ]
+    },
+    {
+        "id": "ce22af2595ba7d87",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Buscar code y aumentar altura",
+        "func": "var datosCSV = msg.payload.csv_alturas.payload;\nvar codeIDBuscado = msg.payload.codeid.payload.codeid;\nvar registroCSV = '';\nvar alturaCaja;\n\n// Buscar el objeto con el code_id correspondiente empezando por el final\nfor (let i = datosCSV.length - 1; i >= 0; i--) {\n    if (datosCSV[i].code_id === codeIDBuscado) {\n        alturaCaja = datosCSV[i].altura_caja + 1;\n        registroCSV = [\n            new Date().toISOString(),\n            datosCSV[i].codigo,\n            datosCSV[i].code_id,\n            alturaCaja,\n            msg.payload.codeid.payload.mission_queue_id\n        ].join(',');\n        break; // Salir del bucle después de encontrar y actualizar el registro\n    }\n}\n\n// El primer return corresponde a la primera salida (registroCSV)\n// El segundo return corresponde a la segunda salida (alturaCaja)\nreturn [ { payload: registroCSV }, { payload: alturaCaja } ];\n\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 240,
+        "wires": [
+            [
+                "e701a48ad4c398fa"
+            ],
+            [
+                "fd8b09beae578593"
+            ]
+        ]
+    },
+    {
+        "id": "e701a48ad4c398fa",
+        "type": "file",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Guardar en CSV",
+        "filename": "/home/sistemas/codigo-alturas/alturas.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1020,
+        "y": 120,
+        "wires": [
+            [
+                "27b797c91fdf43f2"
+            ]
+        ]
+    },
+    {
+        "id": "4544070768e88d89",
+        "type": "http request",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Registro 8 Altura_Gaveta",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/8",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 990,
+        "y": 380,
+        "wires": [
+            [
+                "2c0234fa4eba0198"
+            ]
+        ]
+    },
+    {
+        "id": "fd8b09beae578593",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Asignar a value",
+        "func": "msg.payload = {\n    \"value\": msg.payload - 1 // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 320,
+        "wires": [
+            [
+                "4544070768e88d89"
+            ]
+        ]
+    },
+    {
+        "id": "2c0234fa4eba0198",
+        "type": "debug",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "altura",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "0b622660a76f91a5",
+        "type": "comment",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Sumar 1 a la altura según el anterior valor",
+        "info": "",
+        "x": 260,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "ccd9b79afc765962",
+        "type": "comment",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Bloqueo si no cambia queue_id",
+        "info": "",
+        "x": 230,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "80c7e009e5a5cd54",
+        "type": "join",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 510,
+        "y": 500,
+        "wires": [
+            [
+                "978856abc3a39116"
+            ]
+        ]
+    },
+    {
+        "id": "7d58b83caba206ee",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Coger valor",
+        "func": "msg.topic = \"codeid\";\nmsg.payload = {\n    \"codeid\": msg.payload.codeid.payload,\n    \"mission_queue_id\": msg.payload.status.payload.mission_queue_id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 340,
+        "wires": [
+            [
+                "4178b8725b6e4d4f",
+                "b665d8ba7196d4ce"
+            ]
+        ]
+    },
+    {
+        "id": "b665d8ba7196d4ce",
+        "type": "debug",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Mensaje de Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "966794c4dbdab172",
+        "type": "http request",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Etapa-proceso",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/1",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 140,
+        "y": 620,
+        "wires": [
+            [
+                "d19d2830ba46b412"
+            ]
+        ]
+    },
+    {
+        "id": "3aba199b51d6f01b",
+        "type": "http request",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Status",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/status",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 150,
+        "y": 560,
+        "wires": [
+            [
+                "02d0bf4a2261190c"
+            ]
+        ]
+    },
+    {
+        "id": "02d0bf4a2261190c",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Sacar mission queue id",
+        "func": "msg.topic = \"status\";\n{\n    msg.payload = msg.payload.mission_queue_id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 560,
+        "wires": [
+            [
+                "c74d6b580bc76c09"
+            ]
+        ]
+    },
+    {
+        "id": "d19d2830ba46b412",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"etapa\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 620,
+        "wires": [
+            [
+                "c74d6b580bc76c09"
+            ]
+        ]
+    },
+    {
+        "id": "c74d6b580bc76c09",
+        "type": "join",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 490,
+        "y": 620,
+        "wires": [
+            [
+                "34dd292a85bbbae4"
+            ]
+        ]
+    },
+    {
+        "id": "34dd292a85bbbae4",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Comprobar valor de etapa 105",
+        "func": "// Filtrar el valor cuando el \"value\" de la etapa sea igual a 105\nif (msg.payload.status && msg.payload.etapa && msg.payload.etapa.payload.value === 105) {\n    msg.topic = \"status\"\n    msg.payload = {\n        \"mission_queue_id\": msg.payload.status.payload\n    }\n    return msg;\n} else {\n    return null; // No pasa el valor\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 580,
+        "wires": [
+            [
+                "80c7e009e5a5cd54"
+            ]
+        ]
+    },
+    {
+        "id": "3d025147bde3eb49",
+        "type": "comment",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Bloqueo si no está en etapa 103",
+        "info": "",
+        "x": 750,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "de763422be100126",
+        "type": "comment",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Voy a filtrar de nuevo por queue_id",
+        "info": "",
+        "x": 700,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "273d3a62201ac272",
+        "type": "rbe",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload.codeid.payload.mission_queue_id",
+        "topi": "topic",
+        "x": 690,
+        "y": 180,
+        "wires": [
+            [
+                "ce22af2595ba7d87"
+            ]
+        ]
+    },
+    {
+        "id": "6c5be04d47787c9d",
+        "type": "inject",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 860,
+        "wires": [
+            [
+                "ca468886248cf186",
+                "5b1e75468f1cba23",
+                "2fa5d79fb07a5528"
+            ]
+        ]
+    },
+    {
+        "id": "ca468886248cf186",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Code_id",
+        "func": "msg.topic = \"codeid\";\nmsg.payload = 4\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 820,
+        "wires": [
+            [
+                "c016a04a65fab49f"
+            ]
+        ]
+    },
+    {
+        "id": "5b1e75468f1cba23",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Status",
+        "func": "msg.topic = \"status\";\nvar valores = [\"2000\", \"2001\", \"2002\", \"2003\", null];\nvar indiceAleatorio = Math.floor(Math.random() * valores.length);\n{\n    msg.payload = valores[indiceAleatorio]\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 860,
+        "wires": [
+            [
+                "89c5f329e530cd49"
+            ]
+        ]
+    },
+    {
+        "id": "2fa5d79fb07a5528",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Etapa-proceso",
+        "func": "msg.topic = \"etapa\";\nmsg.payload = {\n    'value':  103\n}\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 900,
+        "wires": [
+            [
+                "89c5f329e530cd49"
+            ]
+        ]
+    },
+    {
+        "id": "29bc4d4fda9205b4",
+        "type": "comment",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Para pruebas sin robot",
+        "info": "",
+        "x": 200,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "89c5f329e530cd49",
+        "type": "join",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 510,
+        "y": 860,
+        "wires": [
+            [
+                "1fba8ee7d8c5986f"
+            ]
+        ]
+    },
+    {
+        "id": "1fba8ee7d8c5986f",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Comprobar valor de etapa 103",
+        "func": "// Filtrar el valor cuando el \"value\" de la etapa sea igual a 103\nif (msg.payload.status && msg.payload.etapa && msg.payload.etapa.payload.value === 103) {\n    msg.topic = \"status\"\n    msg.payload = {\n        \"mission_queue_id\": msg.payload.status.payload\n    }\n    return msg;\n} else {\n    return null; // No pasa el valor\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 840,
+        "wires": [
+            [
+                "c016a04a65fab49f"
+            ]
+        ]
+    },
+    {
+        "id": "c016a04a65fab49f",
+        "type": "join",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 510,
+        "y": 780,
+        "wires": [
+            [
+                "2a47d7367d8ea66b"
+            ]
+        ]
+    },
+    {
+        "id": "2a47d7367d8ea66b",
+        "type": "rbe",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.status.payload.mission_queue_id",
+        "topi": "topic",
+        "x": 650,
+        "y": 740,
+        "wires": [
+            [
+                "2eee1d3523395397"
+            ]
+        ]
+    },
+    {
+        "id": "2eee1d3523395397",
+        "type": "function",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Coger valor",
+        "func": "msg.topic = \"codeid\";\nmsg.payload = {\n    \"codeid\": msg.payload.codeid.payload,\n    \"mission_queue_id\": msg.payload.status.payload.mission_queue_id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 680,
+        "wires": [
+            [
+                "2f65f94042e3c6aa",
+                "4178b8725b6e4d4f"
+            ]
+        ]
+    },
+    {
+        "id": "2f65f94042e3c6aa",
+        "type": "debug",
+        "z": "6f0ab9c3a4d2e71d",
+        "name": "Mensaje de Status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 640,
+        "wires": []
+    }
+]

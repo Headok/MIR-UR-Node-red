@@ -1,0 +1,1681 @@
+[
+    {
+        "id": "baabe667a50bcd0d",
+        "type": "tab",
+        "label": "Proceso_codigos V1.5",
+        "disabled": false,
+        "info": "V1.3\r\nSacando X e Y desde la cámara, a parte del código.\r\nSe suben estos datos a influxdb\r\n\r\nv1.4\r\nVamos a mandar los datos del código cuando la etapa sea distinta a 103.\r\nDatos de X e Y cuando la etapa sea 103\r\n\r\nv1.5\r\nActualización nueva cámara\r\nQue diferencie código mediante mission_queue_id\r\nMandar código cuando estado de misión sea 101.",
+        "env": []
+    },
+    {
+        "id": "d54102c8a0e32954",
+        "type": "inject",
+        "z": "baabe667a50bcd0d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "b2eef92184e08918",
+                "ddf75046ec3bdd05",
+                "17096dfdf80e8944"
+            ]
+        ]
+    },
+    {
+        "id": "b2eef92184e08918",
+        "type": "file in",
+        "z": "baabe667a50bcd0d",
+        "name": "CSV codigos y posiciones",
+        "filename": "/home/sistemas/codigos_pos.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 390,
+        "y": 60,
+        "wires": [
+            [
+                "3dd50c56fa12b2f1"
+            ]
+        ]
+    },
+    {
+        "id": "3dd50c56fa12b2f1",
+        "type": "csv",
+        "z": "baabe667a50bcd0d",
+        "name": "Paso a json",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "codigo, x, y, z, posMIR",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 650,
+        "y": 60,
+        "wires": [
+            [
+                "620d727f65269497"
+            ]
+        ]
+    },
+    {
+        "id": "620d727f65269497",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"csv_codigo\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 60,
+        "wires": [
+            [
+                "bb8ba1cb94e87aaa",
+                "4636062c391826fa"
+            ]
+        ]
+    },
+    {
+        "id": "7365f225fd45fec4",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Sacar código",
+        "func": "msg.topic = \"codigo_actual\"\n\nvar codigo = msg.payload.trim()\n\nmsg.payload = {\n    \"codigo_leido\": codigo\n}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 240,
+        "wires": [
+            [
+                "a51bd9530afaefb5",
+                "b03afab49f21c7c9"
+            ]
+        ]
+    },
+    {
+        "id": "b03afab49f21c7c9",
+        "type": "join",
+        "z": "baabe667a50bcd0d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 550,
+        "y": 340,
+        "wires": [
+            [
+                "14329b78f095b4ea",
+                "994d9e034a6eb4ae"
+            ]
+        ]
+    },
+    {
+        "id": "17096dfdf80e8944",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Etapa-proceso",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/1",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 180,
+        "y": 480,
+        "wires": [
+            [
+                "b51c47f82d5b6889"
+            ]
+        ]
+    },
+    {
+        "id": "b51c47f82d5b6889",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Sacar value + topic",
+        "func": "msg.topic = \"etapa\";\nmsg.payload = msg.payload.value\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 480,
+        "wires": [
+            [
+                "e0258f2140e46f8d",
+                "27982c919e1fcf95",
+                "b03afab49f21c7c9"
+            ]
+        ]
+    },
+    {
+        "id": "ddf75046ec3bdd05",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Status",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/status",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 150,
+        "y": 420,
+        "wires": [
+            [
+                "3c5feec247e4b9ac"
+            ]
+        ]
+    },
+    {
+        "id": "3c5feec247e4b9ac",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Sacar mission queue id",
+        "func": "msg.topic = \"mission_queue\";\n{\n    msg.payload = msg.payload.mission_queue_id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 420,
+        "wires": [
+            [
+                "b03afab49f21c7c9"
+            ]
+        ]
+    },
+    {
+        "id": "3bacd45a0b96bce8",
+        "type": "comment",
+        "z": "baabe667a50bcd0d",
+        "name": "Pruebas offline",
+        "info": "",
+        "x": 200,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "d63f432c2d98660a",
+        "type": "inject",
+        "z": "baabe667a50bcd0d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 720,
+        "wires": [
+            [
+                "043ce2ea01924e27",
+                "b2eef92184e08918",
+                "0c894123b57c87c7",
+                "4fb03491cad1058e"
+            ]
+        ]
+    },
+    {
+        "id": "043ce2ea01924e27",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Generar nº código barras",
+        "func": "// Crear una lista con los posibles valores\nmsg.topic = \"codigo_actual\"\nvar valores = [\"IZQ_1_2\", \"IZQ_1_2\"];\n//var valores = [\"IZQ_1_1\",\"IZQ_1_2\",\"IZQ_1_3\", \"DER_1_1\", \"DER_1_2\", \"DER_1_3\"];\n\n// Escoger un valor aleatorio de la lista\nvar indiceAleatorio = Math.floor(Math.random() * valores.length);\nmsg.payload = {\"codigo_leido\": valores[indiceAleatorio]};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 640,
+        "wires": [
+            [
+                "b539de0d3c3bf132",
+                "b03afab49f21c7c9"
+            ]
+        ]
+    },
+    {
+        "id": "b367ac33a1cb4ea5",
+        "type": "join",
+        "z": "baabe667a50bcd0d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 550,
+        "y": 720,
+        "wires": [
+            [
+                "f689d2bfff433b7d",
+                "994d9e034a6eb4ae"
+            ]
+        ]
+    },
+    {
+        "id": "0c894123b57c87c7",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Generar mision queue",
+        "func": "// Crear una lista con los posibles valores\nmsg.topic = \"mission_queue\";\nvar valores = [1052, 1053, 1054];\n\n// Escoger un valor aleatorio de la lista\nvar indiceAleatorio = Math.floor(Math.random() * valores.length);\nmsg.payload = valores[indiceAleatorio];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4fb03491cad1058e",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Generar etapa",
+        "func": "// Crear una lista con los posibles valores\nmsg.topic = \"etapa\"\nvar valores = [101, 108];\n\n// Escoger un valor aleatorio de la lista\nvar indiceAleatorio = Math.floor(Math.random() * valores.length);\nmsg.payload = valores[indiceAleatorio];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 800,
+        "wires": [
+            [
+                "b539de0d3c3bf132"
+            ]
+        ]
+    },
+    {
+        "id": "bca0e1d1df9f9c05",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1920,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "f689d2bfff433b7d",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Mandar codigo si cambia mission queue y etapa = 101",
+        "func": "// Asumiendo que este nodo recibe el mensaje combinado del nodo join\nvar etapaActual = msg.payload.etapa.payload;\nvar missionQueueActual = msg.payload.mission_queue.payload;\nvar codigoBarras = msg.payload.codigo_actual.payload.codigo_leido;\n\n// Obtener el último valor de mission queue almacenado en el contexto\nvar ultimoMissionQueue = flow.get('ultimoMissionQueue') || '';\n\n// Comprobar si la etapa es 101 y si el mission queue ha cambiado\nif (etapaActual === 101) {\n    // Si la etapa es 101, siempre permitir enviar el código de barras\n    msg.payload = {\n        codigo_actual: codigoBarras,\n        mission_queue: missionQueueActual\n    };\n\n    // Adicionalmente, comprobar si el mission queue ha cambiado\n    if (missionQueueActual !== ultimoMissionQueue) {\n        // Si ha cambiado, actualizar el contexto y permitir el envío\n        flow.set('ultimoMissionQueue', missionQueueActual);\n        return msg;\n    }\n}\n\n// Si el mission queue no ha cambiado o la etapa no es 101, detener el flujo\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 720,
+        "wires": [
+            [
+                "6004de73896fd35f"
+            ]
+        ]
+    },
+    {
+        "id": "14329b78f095b4ea",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Mandar codigo si cambia mission queue y etapa = 101",
+        "func": "// Asumiendo que este nodo recibe el mensaje combinado del nodo join\nvar etapaActual = msg.payload.etapa.payload;\nvar missionQueueActual = msg.payload.mission_queue.payload;\nvar codigoBarras = msg.payload.codigo_actual.payload.codigo_leido;\n\n// Obtener el último valor de mission queue almacenado en el contexto\nvar ultimoMissionQueue = flow.get('ultimoMissionQueue') || '';\n\n// Comprobar si la etapa es 101 y si el mission queue ha cambiado\nif (etapaActual === 101) {\n    // Si la etapa es 101, siempre permitir enviar el código de barras\n    msg.payload = {\n        codigo_actual: codigoBarras,\n        mission_queue: missionQueueActual\n    };\n\n    // Adicionalmente, comprobar si el mission queue ha cambiado\n    if (missionQueueActual !== ultimoMissionQueue) {\n        // Si ha cambiado, actualizar el contexto y permitir el envío\n        flow.set('ultimoMissionQueue', missionQueueActual);\n        return msg;\n    }\n}\n\n// Si el mission queue no ha cambiado o la etapa no es 101, detener el flujo\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 340,
+        "wires": [
+            [
+                "1a1165c65a681fa1"
+            ]
+        ]
+    },
+    {
+        "id": "6004de73896fd35f",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Dar topic",
+        "func": "msg.topic = \"codigo_actual\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 720,
+        "wires": [
+            [
+                "bb8ba1cb94e87aaa"
+            ]
+        ]
+    },
+    {
+        "id": "1a1165c65a681fa1",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Dar topic",
+        "func": "msg.topic = \"codigo_actual\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1120,
+        "y": 340,
+        "wires": [
+            [
+                "bb8ba1cb94e87aaa",
+                "59017af8c19ddf44",
+                "1f65aa96e10d55a9",
+                "c6473b7d8e51413c"
+            ]
+        ]
+    },
+    {
+        "id": "bb8ba1cb94e87aaa",
+        "type": "join",
+        "z": "baabe667a50bcd0d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1190,
+        "y": 280,
+        "wires": [
+            [
+                "04e3b879acedc4ba"
+            ]
+        ]
+    },
+    {
+        "id": "04e3b879acedc4ba",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Obtener datos csv",
+        "func": "// Obtener los datos del CSV del contexto de flujo\nvar datosCSV = msg.payload.csv_codigo.payload;\nvar codigoBuscado = msg.payload.codigo_actual.payload.codigo_actual\n\nvar out_x = null;\nvar out_y = null;\nvar out_z = null;\nvar out_rx = null;\nvar out_ry = null;\nvar out_rz = null;\nvar out_posMIR = null;\nvar out_izq_der = null;\nvar out_pasillo = null;\nvar code_ID = null;\nvar issueID = null\n// El código a buscar viene en el payload del mensaje\nif (codigoBuscado == null) {\n    return { payload: { error: \"Código no proporcionado o inválido\" } };\n}\n\n// Buscar el objeto con el código correspondiente\nlet resultado = datosCSV.find(obj => obj.codigo.toString() === codigoBuscado.toString());\n\nif (resultado) {\n    // Si encontramos el objeto, creamos mensajes para cada valor\n    out_x = { payload: resultado.x };\n    out_y = { payload: resultado.y };\n    out_z = { payload: resultado.z };\n    out_rx = { payload: resultado.rx };\n    out_ry = { payload: resultado.ry };\n    out_rz = { payload: resultado.rz };\n    out_posMIR = { payload: resultado.posMIR };\n    out_izq_der = {payload: resultado.izq0der1};\n    out_pasillo = {payload: resultado.pasillo}\n    code_ID = {payload: resultado.codeID};\n    // Guardar issueID en el contexto de flujo\n    flow.set(\"issueIDParaEtapa108\", resultado.issueID);\n\n} else {\n    // Si no encontramos el objeto, enviamos un error o un mensaje indicándolo\n    return [{ payload: { error: \"Código no encontrado\" } }, { payload: { error: \"Código no encontrado\" } }, { payload: { error: \"Código no encontrado\" } }, { payload: { error: \"Código no encontrado\" } }];\n}\n\n// Devolver un array de mensajes, uno para cada salida de la función\nreturn [out_x, out_y, out_z, out_rx, out_ry, out_rz, out_posMIR, out_izq_der, out_pasillo, code_ID];",
+        "outputs": 10,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1390,
+        "y": 280,
+        "wires": [
+            [
+                "8fc68359b8b1b37b"
+            ],
+            [
+                "389720e7552e6fa3"
+            ],
+            [
+                "eb292e39e8491fd2"
+            ],
+            [
+                "f943370a3d46c3be"
+            ],
+            [
+                "da13bfbef0fc9f62"
+            ],
+            [
+                "79166f65930cb8f5"
+            ],
+            [
+                "e617d3c7673b3e88"
+            ],
+            [
+                "acdbcc621389712c"
+            ],
+            [
+                "251ff0ebc2af5b2e"
+            ],
+            [
+                "a08cc899ec10942f"
+            ]
+        ]
+    },
+    {
+        "id": "813dd60b48232c17",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "debug 16",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1680,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "c6473b7d8e51413c",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Cambiar etapa a 102",
+        "func": "msg.payload = { \"value\": 102 };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1400,
+        "y": 500,
+        "wires": [
+            [
+                "bd587984d94c0d4f"
+            ]
+        ]
+    },
+    {
+        "id": "bd587984d94c0d4f",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 1 ETAPAS",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/1",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1530,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8fc68359b8b1b37b",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar X",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1700,
+        "y": 140,
+        "wires": [
+            [
+                "022b946b745bd189"
+            ]
+        ]
+    },
+    {
+        "id": "389720e7552e6fa3",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar Y",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1700,
+        "y": 180,
+        "wires": [
+            [
+                "abacdae24a4524a2"
+            ]
+        ]
+    },
+    {
+        "id": "eb292e39e8491fd2",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar Z",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1700,
+        "y": 220,
+        "wires": [
+            [
+                "a00e4e32adc50632"
+            ]
+        ]
+    },
+    {
+        "id": "e617d3c7673b3e88",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar a x_offset",
+        "func": "msg.payload = {\n    \"x_offset\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1730,
+        "y": 380,
+        "wires": [
+            [
+                "24986a0920ef49cd"
+            ]
+        ]
+    },
+    {
+        "id": "f943370a3d46c3be",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar RX",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 260,
+        "wires": [
+            [
+                "3f4da677ac73515c"
+            ]
+        ]
+    },
+    {
+        "id": "da13bfbef0fc9f62",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar RY",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 300,
+        "wires": [
+            [
+                "7b61181a44845b87"
+            ]
+        ]
+    },
+    {
+        "id": "79166f65930cb8f5",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar RZ",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 340,
+        "wires": [
+            [
+                "214376536f85e350"
+            ]
+        ]
+    },
+    {
+        "id": "acdbcc621389712c",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar izq-der",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1720,
+        "y": 420,
+        "wires": [
+            [
+                "01d80364a6beecad"
+            ]
+        ]
+    },
+    {
+        "id": "a08cc899ec10942f",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar code-ID",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1720,
+        "y": 500,
+        "wires": [
+            [
+                "bca0e1d1df9f9c05",
+                "ccbe6eb85bb084c3"
+            ]
+        ]
+    },
+    {
+        "id": "251ff0ebc2af5b2e",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Asignar nº pasillo",
+        "func": "msg.payload = {\n    \"value\": msg.payload // El valor que quieres enviar\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1730,
+        "y": 460,
+        "wires": [
+            [
+                "68fc69caa9d30b2b"
+            ]
+        ]
+    },
+    {
+        "id": "022b946b745bd189",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 101 X UR5",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/101",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1980,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "abacdae24a4524a2",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 102 Y UR5",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/102",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1980,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a00e4e32adc50632",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 103 Z UR5",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/103",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1980,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24986a0920ef49cd",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Docking Offset Mesa",
+        "method": "PUT",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/docking_offsets/cc712e49-9a73-11ee-99af-000129a093de",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 2000,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "72f268c334558ffb",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "Leer URL",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1500,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "3f4da677ac73515c",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 104 RX UR5",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/104",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1980,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7b61181a44845b87",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 105 RY UR5",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/105",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1980,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "214376536f85e350",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 106 RZ UR5",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/106",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1980,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "01d80364a6beecad",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 7 Izquiera o Derecha",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/7",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 2010,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ccbe6eb85bb084c3",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 9 Code_ID",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/9",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1970,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "68fc69caa9d30b2b",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 10 Pasillo",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/10",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1970,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2df6dac4f9aad911",
+        "type": "tcp in",
+        "z": "baabe667a50bcd0d",
+        "name": "Lectura código cámara",
+        "server": "server",
+        "host": "",
+        "port": "3001",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "",
+        "topic": "\"codigo_actual\"",
+        "trim": false,
+        "base64": false,
+        "tls": "",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "7365f225fd45fec4"
+            ]
+        ]
+    },
+    {
+        "id": "c20d2d3f52e33db9",
+        "type": "comment",
+        "z": "baabe667a50bcd0d",
+        "name": "JIRA",
+        "info": "",
+        "x": 210,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "e0258f2140e46f8d",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Si etapa 108, mueve tarjeta JIRA",
+        "func": "// Comprobar si la etapa es 108\nif (msg.payload === 108) {\n    // Preparar la información para la transición en Jira\n    var issueId = flow.get(\"issueIDParaEtapa108\");\n\n    var data = {\n        \"transition\": {\n            \"id\": \"11\" // ID de la transición para \"Almacen\" o la etapa deseada en Jira\n        }\n    };\n\n    // Configurar la URL para la solicitud de transición en Jira\n    msg.url = \"https://mir-ur.atlassian.net/rest/api/2/issue/\" + issueId + \"/transitions\";\n    msg.payload = data;\n\n    // Pasar el mensaje al siguiente nodo, probablemente un nodo HTTP request\n    return msg;\n} else {\n    // Si la etapa no es 108, no realizar la transición y detener el flujo\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 1080,
+        "wires": [
+            [
+                "398be2db4adfdbe9"
+            ]
+        ]
+    },
+    {
+        "id": "398be2db4adfdbe9",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Poner en almacen",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1210,
+        "y": 1080,
+        "wires": [
+            [
+                "72f268c334558ffb"
+            ]
+        ]
+    },
+    {
+        "id": "b539de0d3c3bf132",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "debug 17",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "0238ff04edc9a686",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "msg.URL",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "url",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1100,
+        "y": 1660,
+        "wires": []
+    },
+    {
+        "id": "994d9e034a6eb4ae",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Mandar codigo si cambia mission queue y etapa = 201",
+        "func": "// Asumiendo que este nodo recibe el mensaje combinado del nodo join\nvar etapaActual = msg.payload.etapa.payload;\nvar missionQueueActual = msg.payload.mission_queue.payload;\nvar codigoBarras = msg.payload.codigo_actual.payload.codigo_leido;\n\nvar ultimoMissionQueue = flow.get('ultimoMissionQueue') || '';\n\n// Comprobar si la etapa es 201 y si el mission queue ha cambiado\nif (etapaActual === 201) {\n    // Si la etapa es 201, siempre permitir enviar el código de barras\n    msg.payload = {\n        codigo_QR: codigoBarras,\n        mission_queue: missionQueueActual\n    };\n\n    // Adicionalmente, comprobar si el mission queue ha cambiado\n    if (missionQueueActual !== ultimoMissionQueue) {\n        // Si ha cambiado, actualizar el contexto y permitir el envío\n        flow.set('ultimoMissionQueue', missionQueueActual);\n        return msg;\n    }\n}\n\n// Si el mission queue no ha cambiado o la etapa no es 101, detener el flujo\nreturn null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 1340,
+        "wires": [
+            [
+                "09d739e1230dabe3",
+                "9d59439ad0d9d6b5",
+                "bfc0048c1fc168de"
+            ]
+        ]
+    },
+    {
+        "id": "4d063886ad71f331",
+        "type": "comment",
+        "z": "baabe667a50bcd0d",
+        "name": "Recogida vacia si la orden se manda desde el MIR",
+        "info": "",
+        "x": 350,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "09d739e1230dabe3",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Dar topic",
+        "func": "msg.topic = \"codigo_actual_recog_vacia\"\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 1400,
+        "wires": [
+            [
+                "4636062c391826fa"
+            ]
+        ]
+    },
+    {
+        "id": "4636062c391826fa",
+        "type": "join",
+        "z": "baabe667a50bcd0d",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1410,
+        "y": 1380,
+        "wires": [
+            [
+                "d05a4ca87e6f5bcb"
+            ]
+        ]
+    },
+    {
+        "id": "d05a4ca87e6f5bcb",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Obtener issueID",
+        "func": "// Obtener los datos del CSV del contexto de flujo\nvar datosCSV = msg.payload.csv_codigo.payload;\nvar codigoBuscado = msg.payload.codigo_actual_recog_vacia.payload.codigo_QR;\n\n// El código a buscar viene en el payload del mensaje\nif (codigoBuscado == null) {\n    return { payload: { error: \"Código no proporcionado o inválido\" } };\n}\n\n// Buscar el objeto con el código correspondiente\nlet resultado = datosCSV.find(obj => obj.codigo.toString() === codigoBuscado.toString());\n\nif (resultado && resultado.issueID) {\n    // Si encontramos el objeto, actualizamos el contexto de flujo y devolvemos el issueID\n    flow.set(\"issueIDParaEtapa208\", resultado.issueID);\n    return { payload: resultado.issueID };\n} else {\n    // Si no encontramos el objeto, enviamos un error\n    return { payload: { error: \"Código no encontrado\" } };\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1600,
+        "y": 1360,
+        "wires": [
+            [
+                "813dd60b48232c17"
+            ]
+        ]
+    },
+    {
+        "id": "27982c919e1fcf95",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Si etapa 208, mueve tarjeta JIRA",
+        "func": "// Comprobar si la etapa es 208\nif (msg.payload === 208) {\n    // Preparar la información para la transición en Jira\n    var issueId = flow.get(\"issueIDParaEtapa208\");\n\n    var data = {\n        \"transition\": {\n            \"id\": \"31\" // ID de la transición para \"SUMINISTRADOR\" o la etapa deseada en Jira\n        }\n    };\n\n    // Configurar la URL para la solicitud de transición en Jira\n    msg.url = \"https://mir-ur.atlassian.net/rest/api/2/issue/\" + issueId + \"/transitions\";\n    msg.payload = data;\n\n    // Pasar el mensaje al siguiente nodo, probablemente un nodo HTTP request\n    return msg;\n} else {\n    // Si la etapa no es 108, no realizar la transición y detener el flujo\n    return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 1580,
+        "wires": [
+            [
+                "7a064cd3950f055a",
+                "0238ff04edc9a686"
+            ]
+        ]
+    },
+    {
+        "id": "7a064cd3950f055a",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Poner en suministrador",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1250,
+        "y": 1580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a51bd9530afaefb5",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "codigo",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "9d59439ad0d9d6b5",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Cambiar etapa a 202",
+        "func": "msg.payload = { \"value\": 202 };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 1220,
+        "wires": [
+            [
+                "5eba51bf2dbef5a0"
+            ]
+        ]
+    },
+    {
+        "id": "5eba51bf2dbef5a0",
+        "type": "http request",
+        "z": "baabe667a50bcd0d",
+        "name": "Registro 1 ETAPAS",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/registers/1",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 1470,
+        "y": 1220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e2e8e85285228533",
+        "type": "influxdb out",
+        "z": "baabe667a50bcd0d",
+        "influxdb": "cefbf44aade52849",
+        "name": "MIR_Influx_Gaveta",
+        "measurement": "Datos_Gavetas",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "mirur",
+        "bucket": "MIR_Bucket",
+        "x": 1630,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "59017af8c19ddf44",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Mandar sólo código",
+        "func": "var codigoBuscado = msg.payload.codigo_actual.payload.codigo_actual\nmsg.payload = { \"codigo_leido\": codigoBuscado };\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1410,
+        "y": 660,
+        "wires": [
+            [
+                "e2e8e85285228533"
+            ]
+        ]
+    },
+    {
+        "id": "bfc0048c1fc168de",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Mandar sólo código",
+        "func": "var codigoBuscado = msg.payload.codigo_QR\nmsg.payload = { \"codigo_leido\": codigoBuscado };\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1210,
+        "y": 1500,
+        "wires": [
+            [
+                "e84a3b7035a2aed5"
+            ]
+        ]
+    },
+    {
+        "id": "e84a3b7035a2aed5",
+        "type": "influxdb out",
+        "z": "baabe667a50bcd0d",
+        "influxdb": "cefbf44aade52849",
+        "name": "MIR_Influx_Gaveta",
+        "measurement": "Datos_Gavetas",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "mirur",
+        "bucket": "MIR_Bucket",
+        "x": 1430,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "1f65aa96e10d55a9",
+        "type": "debug",
+        "z": "baabe667a50bcd0d",
+        "name": "lectura",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "796bb1bb1cc3c7b1",
+        "type": "function",
+        "z": "baabe667a50bcd0d",
+        "name": "Cambiar etapa a 102",
+        "func": "msg.payload = { \"value\": 102 };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cefbf44aade52849",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "Influx_JAM90",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    }
+]

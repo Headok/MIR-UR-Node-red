@@ -1,0 +1,432 @@
+[
+    {
+        "id": "0d4288e569f48be9",
+        "type": "tab",
+        "label": "Resta de altura",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3c5095bc45b0b507",
+        "type": "comment",
+        "z": "0d4288e569f48be9",
+        "name": "Escribir el numero de gavetas",
+        "info": "",
+        "x": 140,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b92b07ee0bf7b27f",
+        "type": "ui_button",
+        "z": "0d4288e569f48be9",
+        "name": "Enviar Datos",
+        "group": "57611c59fb861183",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Enviar",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "send",
+        "topicType": "str",
+        "x": 490,
+        "y": 300,
+        "wires": [
+            [
+                "0172ddf32218d070",
+                "d18e6575bca17481"
+            ]
+        ]
+    },
+    {
+        "id": "f056d69d7a6d6049",
+        "type": "ui_text_input",
+        "z": "0d4288e569f48be9",
+        "name": "Altura ID",
+        "label": "¿Cuántas gavetas quedan?",
+        "tooltip": "",
+        "group": "57611c59fb861183",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "number",
+        "delay": "10",
+        "topic": "alturaId",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 490,
+        "y": 260,
+        "wires": [
+            [
+                "4c6c03d875d2a149"
+            ]
+        ]
+    },
+    {
+        "id": "4c6c03d875d2a149",
+        "type": "function",
+        "z": "0d4288e569f48be9",
+        "name": "Almacenar Entradas",
+        "func": "if (msg.topic === 'codigo_barras') {\n    flow.set('codigoBarras', msg.payload);\n} else if (msg.topic === 'alturaId') {\n    flow.set('alturaId', msg.payload);\n}\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 240,
+        "wires": [
+            [
+                "9c8d88e676baefe4"
+            ]
+        ]
+    },
+    {
+        "id": "0172ddf32218d070",
+        "type": "function",
+        "z": "0d4288e569f48be9",
+        "name": "Coger datos de UI",
+        "func": "msg.topic = \"ngavetas\"\nvar codigo = flow.get('codigoBarras');\nvar alturaId = flow.get('alturaId');\n\n msg.payload = {\n    codigo,\n    alturaId\n }\n\n// Aquí podrías incluir lógica adicional para procesar los datos\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 300,
+        "wires": [
+            [
+                "a460874b98ad7073"
+            ]
+        ]
+    },
+    {
+        "id": "9c8d88e676baefe4",
+        "type": "debug",
+        "z": "0d4288e569f48be9",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 980,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "a44426f1e771e61c",
+        "type": "debug",
+        "z": "0d4288e569f48be9",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d18e6575bca17481",
+        "type": "file in",
+        "z": "0d4288e569f48be9",
+        "name": "CSV codigos y posiciones",
+        "filename": "/home/sistemas/codigos_pos.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 610,
+        "y": 360,
+        "wires": [
+            [
+                "c4caa484272a32b7"
+            ]
+        ]
+    },
+    {
+        "id": "c4caa484272a32b7",
+        "type": "csv",
+        "z": "0d4288e569f48be9",
+        "name": "Paso a json",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "codigo, x, y, z, posMIR",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 630,
+        "y": 420,
+        "wires": [
+            [
+                "582e143110eda70d"
+            ]
+        ]
+    },
+    {
+        "id": "582e143110eda70d",
+        "type": "function",
+        "z": "0d4288e569f48be9",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"csv_codigo\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 480,
+        "wires": [
+            [
+                "a460874b98ad7073"
+            ]
+        ]
+    },
+    {
+        "id": "a460874b98ad7073",
+        "type": "join",
+        "z": "0d4288e569f48be9",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 890,
+        "y": 380,
+        "wires": [
+            [
+                "dba6f242541a05fd"
+            ]
+        ]
+    },
+    {
+        "id": "dba6f242541a05fd",
+        "type": "function",
+        "z": "0d4288e569f48be9",
+        "name": "Buscar_código",
+        "func": "// Obtener los datos del CSV del contexto de flujo\nvar datosCSV = msg.payload.csv_codigo.payload;\nvar datos_gaveta = msg.payload.ngavetas.payload;\n\n\n// El código a buscar viene en el payload del mensaje\nif (datos_gaveta.codigo == null) {\n    return { payload: { error: \"Código no proporcionado o inválido\" } };\n}\n\n// Buscar el objeto con el código correspondiente\nlet resultado = datosCSV.find(obj => obj.codigo.toString() === datos_gaveta.codigo.toString());\n\nif (resultado) {\n    // Si encontramos el objeto, creamos mensajes para cada valor\n    msg.payload = [\n        new Date().toISOString(),\n        resultado.codigo,\n        resultado.codeID,\n        datos_gaveta.alturaId,\n        \"retirada de gavetas manual\"\n    ].join(',');\n} else {\n    // Si no encontramos el objeto, enviamos un error o un mensaje indicándolo\n    return [{ payload: { error: \"Código no encontrado\" } }, { payload: { error: \"Código no encontrado\" } }, { payload: { error: \"Código no encontrado\" } }, { payload: { error: \"Código no encontrado\" } }];\n}\n\n// Devolver un array de mensajes, uno para cada salida de la función\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 380,
+        "wires": [
+            [
+                "a44426f1e771e61c",
+                "446957e849cbf9cd"
+            ]
+        ]
+    },
+    {
+        "id": "446957e849cbf9cd",
+        "type": "file",
+        "z": "0d4288e569f48be9",
+        "name": "Guardar en CSV",
+        "filename": "/home/sistemas/codigo-alturas/alturas.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1280,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0ef69fe4df88fe43",
+        "type": "ui_dropdown",
+        "z": "0d4288e569f48be9",
+        "name": "",
+        "label": "Código de barras",
+        "tooltip": "",
+        "place": "Elige el código",
+        "group": "57611c59fb861183",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "codigo_barras",
+        "topicType": "str",
+        "className": "",
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "4c6c03d875d2a149"
+            ]
+        ]
+    },
+    {
+        "id": "78986caace74e95d",
+        "type": "file in",
+        "z": "0d4288e569f48be9",
+        "name": "CSV codigos y posiciones",
+        "filename": "/home/sistemas/codigos_pos.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 170,
+        "y": 120,
+        "wires": [
+            [
+                "aaa4db57767e8f4e"
+            ]
+        ]
+    },
+    {
+        "id": "aaa4db57767e8f4e",
+        "type": "csv",
+        "z": "0d4288e569f48be9",
+        "name": "Paso a json",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "codigo, x, y, z, posMIR",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 270,
+        "y": 180,
+        "wires": [
+            [
+                "fd054feebc1a41c8"
+            ]
+        ]
+    },
+    {
+        "id": "edabe85aca8b2eef",
+        "type": "inject",
+        "z": "0d4288e569f48be9",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3600",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "78986caace74e95d"
+            ]
+        ]
+    },
+    {
+        "id": "fd054feebc1a41c8",
+        "type": "function",
+        "z": "0d4288e569f48be9",
+        "name": "function 1",
+        "func": "let opciones = msg.payload.map(function(item) {\n    return item.codigo.toString();\n});\n\nmsg.options = opciones; // Asegúrate de asignar el array a msg.payload\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 120,
+        "wires": [
+            [
+                "57930cf81dfedb98",
+                "0ef69fe4df88fe43"
+            ]
+        ]
+    },
+    {
+        "id": "57930cf81dfedb98",
+        "type": "debug",
+        "z": "0d4288e569f48be9",
+        "name": "csv codes",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "options",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "57611c59fb861183",
+        "type": "ui_group",
+        "name": "Nº Gaveta",
+        "tab": "f388870d80f45846",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f388870d80f45846",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

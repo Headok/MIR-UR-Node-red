@@ -1,0 +1,19 @@
+date, codigo, code_id, altura_caja, mission_queue_id
+2024-02-01T09:15:44.709Z,IZQ_1_1,4,0,retirada de gavetas manual
+2024-02-01T09:15:46.899Z,IZQ_1_2,5,0,retirada de gavetas manual
+2024-02-01T09:15:48.972Z,IZQ_1_3,6,0,retirada de gavetas manual
+2024-02-01T09:15:51.932Z,IZQ_2_1,7,0,retirada de gavetas manual
+2024-02-01T09:18:42.572Z,IZQ_2_2,8,0,retirada de gavetas manual
+2024-02-01T09:18:49.595Z,IZQ_2_3,9,0,retirada de gavetas manual
+2024-02-01T09:18:51.996Z,DER_1_1,10,0,retirada de gavetas manual
+2024-02-01T09:18:54.291Z,DER_1_2,11,0,retirada de gavetas manual
+2024-02-01T09:18:58.155Z,DER_1_3,12,0,retirada de gavetas manual
+2024-02-01T09:19:00.962Z,DER_2_1,13,0,retirada de gavetas manual
+2024-02-01T09:19:03.274Z,DER_2_2,14,0,retirada de gavetas manual
+2024-02-01T09:19:05.787Z,DER_2_3,15,0,retirada de gavetas manual
+2024-06-14T10:45:57.069Z,IZQ_2_1,7,1,1431
+2024-06-14T10:48:57.175Z,IZQ_1_2,5,1,1432
+2024-06-14T10:51:47.448Z,DER_2_1,13,1,1433
+2024-06-14T10:57:37.892Z,DER_1_1,10,1,1434
+2024-06-14T11:01:03.200Z,DER_2_1,13,2,1435
+2024-06-14T11:05:17.594Z,DER_1_1,10,2,1436
