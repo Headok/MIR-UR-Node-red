@@ -1,0 +1,810 @@
+[
+    {
+        "id": "3d8694f4d377cd87",
+        "type": "tab",
+        "label": "MIR_v3.1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "08f5ed59fb49d839",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Sacar código guid actual",
+        "func": "msg.topic = \"Get Mission GUID\"\nvar state = msg.payload.state\nvar nombre_mision_actual\nvar start = msg.payload.started\n\n\n    // valor = valor \nnombre_mision_actual = msg.payload.mission_id;\nmsg.payload = {\n    \"Nombre_misión_actual\": nombre_mision_actual,\n    state,\n    \"Tiempo_inicio\": start\n}\n\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 280,
+        "wires": [
+            [
+                "4db1ef12ca8e55a9"
+            ]
+        ]
+    },
+    {
+        "id": "145cd18addc9e16a",
+        "type": "inject",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "851e953ea3547ed6",
+                "1adbe25dca01c233",
+                "25b27742e24e4a0e",
+                "7a257aaf81749975"
+            ]
+        ]
+    },
+    {
+        "id": "1adbe25dca01c233",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Generar número queue_id",
+        "func": "// Crear una lista con los posibles valores\nvar valores = [888, 889, 890, 891, 893, 903, 1003, null];\n\n// Escoger un valor aleatorio de la lista\nvar indiceAleatorio = Math.floor(Math.random() * valores.length);\nmsg.payload = {\"mission_queue_id\": valores[indiceAleatorio]};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "b40fdfecf9fbf571"
+            ]
+        ]
+    },
+    {
+        "id": "96cf58b32f48734d",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "URL Actual",
+        "func": "// Obtener el valor del mensaje entrante\nvar valor = msg.payload.mision_actual;\n\n\n// Construir la URL con el número de entrada\nvar urlBase = \"http://172.19.20.20/api/v2.0.0/mission_queue/\";\n\nvar urlCompleta = urlBase + valor;\n\n// Guardar la URL modificada en el mensaje\nmsg.url = urlCompleta;\n\nif (valor !== \"Robot sin misión\") {\n    return msg; // Si el payload no es ese string, permite que el mensaje continúe\n}\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 280,
+        "wires": [
+            [
+                "c5b904d0e70df127"
+            ]
+        ]
+    },
+    {
+        "id": "b40fdfecf9fbf571",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Lectura misiones",
+        "func": "var prev_queue_id = flow.get(\"prev_queue_id\") || null;\nvar current_queue_id = msg.payload.mission_queue_id;\n\nvar outputMisionActual = null;\nvar outputMisionTerminada = null;\n\n// Si el valor actual es null\nif(current_queue_id === null) {\n    outputMisionActual = {\"payload\": {\"mision_actual\": \"Robot sin misión\"}};\n\n    if (prev_queue_id !== null) {\n        outputMisionTerminada = {\"payload\": {\"mision_terminada\": prev_queue_id}};\n    }\n} else {\n    // Si hay una misión actual\n    outputMisionActual = {\"payload\": {\"mision_actual\": current_queue_id}};\n    \n    // Si hubo un cambio desde la última vez\n    if(prev_queue_id !== null && prev_queue_id !== current_queue_id) {\n        outputMisionTerminada = {\"payload\": {\"mision_terminada\": prev_queue_id}};\n    }\n}\n\n// Guarda el valor actual para la próxima vez\nflow.set(\"prev_queue_id\", current_queue_id);\n\nreturn [outputMisionActual, outputMisionTerminada];",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 280,
+        "wires": [
+            [
+                "96cf58b32f48734d",
+                "a25a897b94c8934f"
+            ],
+            [
+                "b76a20265e5a225b"
+            ]
+        ]
+    },
+    {
+        "id": "028eae2c7889dbb8",
+        "type": "comment",
+        "z": "3d8694f4d377cd87",
+        "name": "Dónde va este filtro?",
+        "info": "Conectar el filtro a Lectura misiones!",
+        "x": 510,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "b76a20265e5a225b",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "URL Terminada",
+        "func": "// Obtener el valor del mensaje entrante\nvar valor = msg.payload.mision_terminada;\n\n\n// Construir la URL con el número de entrada\nvar urlBase = \"http://172.19.20.20/api/v2.0.0/mission_queue/\";\n\nvar urlCompleta = urlBase + valor;\n\n// Guardar la URL modificada en el mensaje\nmsg.url = urlCompleta;\n\nif (valor !== null) {\n    return msg; // Si el payload no es null, permite que el mensaje continúe\n}\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 480,
+        "wires": [
+            [
+                "bb847d81e5dca234"
+            ]
+        ]
+    },
+    {
+        "id": "086eba62a48665c3",
+        "type": "debug",
+        "z": "3d8694f4d377cd87",
+        "name": "Mision actual",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1430,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a25a897b94c8934f",
+        "type": "switch",
+        "z": "3d8694f4d377cd87",
+        "name": "Robot sin misión",
+        "property": "payload.mision_actual",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Robot sin misión",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 490,
+        "y": 240,
+        "wires": [
+            [
+                "161c5b8956af578f",
+                "7fca5d03edb0c6eb"
+            ]
+        ]
+    },
+    {
+        "id": "bb847d81e5dca234",
+        "type": "http request",
+        "z": "3d8694f4d377cd87",
+        "name": "Mission queue API",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 510,
+        "y": 480,
+        "wires": [
+            [
+                "79f402ad668c53aa"
+            ]
+        ]
+    },
+    {
+        "id": "c5b904d0e70df127",
+        "type": "http request",
+        "z": "3d8694f4d377cd87",
+        "name": "Mission queue API",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 690,
+        "y": 280,
+        "wires": [
+            [
+                "08f5ed59fb49d839"
+            ]
+        ]
+    },
+    {
+        "id": "79f402ad668c53aa",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Sacar código guid terminada + tiempos",
+        "func": "msg.topic = \"Get Mission GUID\"\nvar state = msg.payload.state\nvar nombre_mision_finish\nvar start = msg.payload.started\nvar finish = msg.payload.finished\nvar total = Date.parse(finish) - Date.parse(start)\n\n\nnombre_mision_finish = msg.payload.mission_id;\n\nmsg.payload = {\n    \"Misión_terminada\": nombre_mision_finish, \n    \"Tiempo_inicio\": start, \"Tiempo_final\": finish, \n    \"Tiempo_trabajo\": total / 1000, \n    state\n}\n\n\nreturn msg;\n\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 480,
+        "wires": [
+            [
+                "cfaf400755c81efe"
+            ]
+        ]
+    },
+    {
+        "id": "10b4bb93e4105e43",
+        "type": "influxdb out",
+        "z": "3d8694f4d377cd87",
+        "influxdb": "cefbf44aade52849",
+        "name": "MIR_Influx_Misión Actual",
+        "measurement": "Datos_MIR_mision_actual",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "mirur",
+        "bucket": "MIR_Bucket",
+        "x": 930,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "161c5b8956af578f",
+        "type": "rbe",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "10b4bb93e4105e43"
+            ]
+        ]
+    },
+    {
+        "id": "7fca5d03edb0c6eb",
+        "type": "debug",
+        "z": "3d8694f4d377cd87",
+        "name": "Robot sin misión",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "851e953ea3547ed6",
+        "type": "http request",
+        "z": "3d8694f4d377cd87",
+        "name": "Mission group 23.24TKNIKA",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/mission_groups/a337db93-7952-11ee-b8df-000129a093de/missions",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 200,
+        "y": 540,
+        "wires": [
+            [
+                "8fcae3fc79898a6b"
+            ]
+        ]
+    },
+    {
+        "id": "8fcae3fc79898a6b",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"Lista misiones 1\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 600,
+        "wires": [
+            [
+                "4d81a20d7d40ae15"
+            ]
+        ]
+    },
+    {
+        "id": "25b27742e24e4a0e",
+        "type": "http request",
+        "z": "3d8694f4d377cd87",
+        "name": "Status",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/status",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 330,
+        "y": 60,
+        "wires": [
+            [
+                "cdfbf404bb30f5d4",
+                "f82492efbf6264c0"
+            ]
+        ]
+    },
+    {
+        "id": "cfaf400755c81efe",
+        "type": "join",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 870,
+        "y": 600,
+        "wires": [
+            [
+                "34aac3bf8db214b2"
+            ]
+        ]
+    },
+    {
+        "id": "4db1ef12ca8e55a9",
+        "type": "join",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 990,
+        "y": 380,
+        "wires": [
+            [
+                "b7167a6c8895105c"
+            ]
+        ]
+    },
+    {
+        "id": "b7167a6c8895105c",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Dar nombre a misión actual",
+        "func": "var missionGuid = msg.payload[\"Get Mission GUID\"].payload[\"Nombre_misión_actual\"];\n// Sacar state a var\nvar state = msg.payload[\"Get Mission GUID\"].payload.state\n// Definir nombre_mision\nvar nombre_mision\n// Tomar la lista de misiones del payload del mensaje entrante\nvar missions = msg.payload[\"Lista misiones\"].payload;\n\n// Buscar la misión en la lista usando el guid\nvar mission = missions.find(m => m.guid === missionGuid);\n\nif (mission) {\n    msg.payload = {\n        \"mision_actual\": mission.name,\n        \"Tiempo_inicio\": msg.payload[\"Get Mission GUID\"].payload.Tiempo_inicio\n    }\n} else {\n    msg.payload = {\n        missionGuid\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 380,
+        "wires": [
+            [
+                "086eba62a48665c3",
+                "3ffa2c792ab66119"
+            ]
+        ]
+    },
+    {
+        "id": "34aac3bf8db214b2",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Find Mission (Done, Aborted)",
+        "func": "// Tomar el guid de la misión directamente del payload del mensaje entrante\n\nvar missionGuid = msg.payload[\"Get Mission GUID\"].payload[\"Misión_terminada\"]; \n// Sacar state a var\nvar state = msg.payload[\"Get Mission GUID\"].payload.state\n// Definir nombre_mision\nvar nombre_mision\n// Tomar la lista de misiones del payload del mensaje entrante\nvar missions = msg.payload[\"Lista misiones\"].payload;\n\n// Buscar la misión en la lista usando el guid\nvar mission = missions.find(m => m.guid === missionGuid);\n//Vars tiempo\nvar tiempo_inicio = msg.payload[\"Get Mission GUID\"].payload.Tiempo_inicio\nvar tiempo_final = msg.payload[\"Get Mission GUID\"].payload.Tiempo_final\nvar tiempo_trabajo = msg.payload[\"Get Mission GUID\"].payload.Tiempo_trabajo\n\n// Si la misión se encuentra, establecer el nombre de la misión en el payload de salida. \n// Si el estado era Aborted, le pone Aborted delante.\n   \nif (mission) {\n    nombre_mision = mission.name;\n    if (state === \"Aborted\") {\n        nombre_mision = \"(ABORTED)\" + nombre_mision\n    }\n    msg.payload = {\n        \"nombre_mision\": nombre_mision,\n        \"tiempo_inicio\": tiempo_inicio,\n        \"tiempo_final\": tiempo_final,\n        \"tiempo_trabajo\": tiempo_trabajo,\n    }\n\n} else {\n    msg.payload = {\n        \"nombre_mision\": \"Misión no encontrada\",\n        \"tiempo_inicio\": tiempo_inicio,\n        \"tiempo_final\": tiempo_final,\n        \"tiempo_trabajo\": tiempo_trabajo,    \n    } \n}\n\n\n// Devolver el mensaje modificado\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 600,
+        "wires": [
+            [
+                "53aee530e63aaf7b",
+                "84618994c9a50831"
+            ]
+        ]
+    },
+    {
+        "id": "3ffa2c792ab66119",
+        "type": "rbe",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1330,
+        "y": 480,
+        "wires": [
+            [
+                "743b22cffe32307c"
+            ]
+        ]
+    },
+    {
+        "id": "53aee530e63aaf7b",
+        "type": "rbe",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1290,
+        "y": 600,
+        "wires": [
+            [
+                "7c78318997e746ce"
+            ]
+        ]
+    },
+    {
+        "id": "743b22cffe32307c",
+        "type": "influxdb out",
+        "z": "3d8694f4d377cd87",
+        "influxdb": "cefbf44aade52849",
+        "name": "MIR_Influx_Misión Actual",
+        "measurement": "Datos_MIR_mision_actual",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "mirur",
+        "bucket": "MIR_Bucket",
+        "x": 1570,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "7c78318997e746ce",
+        "type": "influxdb out",
+        "z": "3d8694f4d377cd87",
+        "influxdb": "cefbf44aade52849",
+        "name": "MIR_Influx_mision_terminada",
+        "measurement": "Datos_MIR",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "mirur",
+        "bucket": "MIR_Bucket",
+        "x": 1530,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "cdfbf404bb30f5d4",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Sacar bateria",
+        "func": "msg.topic = \"InfluxData\"\n//var int11 = { payload: msg.payload[11].value }\nvar bateria = msg.payload.battery_percentage\nmsg.payload = {\n    \"Battery\": bateria\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 60,
+        "wires": [
+            [
+                "3e133c2a92c03b0d"
+            ]
+        ]
+    },
+    {
+        "id": "3e133c2a92c03b0d",
+        "type": "influxdb out",
+        "z": "3d8694f4d377cd87",
+        "influxdb": "cefbf44aade52849",
+        "name": "MIR_Influx_Bateria",
+        "measurement": "Datos_MIR",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "mirur",
+        "bucket": "MIR_Bucket",
+        "x": 1050,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "7a257aaf81749975",
+        "type": "http request",
+        "z": "3d8694f4d377cd87",
+        "name": "Mission group EINNEK",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://172.19.20.20/api/v2.0.0/mission_groups/56d637b8-845a-11ee-a736-000129a093de/missions",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "Authorization",
+                "keyValue": "",
+                "valueType": "other",
+                "valueValue": "Basic ZGlzdHJpYnV0b3I6NjJmMmYwZjFlZmYxMGQzMTUyYzk1ZjZmMDU5NjU3NmU0ODJiYjhlNDQ4MDY0MzNmNGNmOTI5NzkyODM0YjAxNA=="
+            },
+            {
+                "keyType": "Content-Type",
+                "keyValue": "",
+                "valueType": "application/json",
+                "valueValue": ""
+            }
+        ],
+        "x": 180,
+        "y": 700,
+        "wires": [
+            [
+                "99fe70825377a60b"
+            ]
+        ]
+    },
+    {
+        "id": "4d81a20d7d40ae15",
+        "type": "join",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 570,
+        "y": 620,
+        "wires": [
+            [
+                "22268ff5d8af1684"
+            ]
+        ]
+    },
+    {
+        "id": "22268ff5d8af1684",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Unir listas misiones",
+        "func": "msg.topic = \"Lista misiones\";\n// Suponiendo que los dos arrays llegan en los mensajes msg.payload1 y msg.payload2\nlet array1 = msg.payload[\"Lista misiones 1\"].payload;\nlet array2 = msg.payload[\"Lista misiones 2\"].payload;\n\n// Combinar los dos arrays\nlet combinedArray = array1.concat(array2);\n\n// Configurar el mensaje de salida con el array combinado\nmsg.payload = combinedArray;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 680,
+        "wires": [
+            [
+                "cfaf400755c81efe",
+                "4db1ef12ca8e55a9"
+            ]
+        ]
+    },
+    {
+        "id": "99fe70825377a60b",
+        "type": "function",
+        "z": "3d8694f4d377cd87",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"Lista misiones 2\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 640,
+        "wires": [
+            [
+                "4d81a20d7d40ae15"
+            ]
+        ]
+    },
+    {
+        "id": "84618994c9a50831",
+        "type": "debug",
+        "z": "3d8694f4d377cd87",
+        "name": "Mision terminadas",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "f82492efbf6264c0",
+        "type": "rbe",
+        "z": "3d8694f4d377cd87",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.mission_queue_url",
+        "topi": "topic",
+        "x": 390,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cefbf44aade52849",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "Influx_JAM90",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    }
+]

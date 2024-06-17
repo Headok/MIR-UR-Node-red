@@ -1,0 +1,704 @@
+[
+    {
+        "id": "fe1b7911ce97188e",
+        "type": "tab",
+        "label": "Nueva gaveta en almacen",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f72d72003185753d",
+        "type": "ui_dropdown",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "label": "Izq - Derecha",
+        "tooltip": "",
+        "place": "Izq o Der?",
+        "group": "47830fe12cf82a89",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Izquierda",
+                "value": "Izquierda",
+                "type": "str"
+            },
+            {
+                "label": "Derecha",
+                "value": "Derecha",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "IzqDer",
+        "topicType": "str",
+        "className": "",
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "abb9f6d165762d89"
+            ]
+        ]
+    },
+    {
+        "id": "556fb1481af87d70",
+        "type": "ui_dropdown",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "label": "Pasillo",
+        "tooltip": "",
+        "place": "Elige nº pasillo",
+        "group": "47830fe12cf82a89",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "1",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "2",
+                "value": 2,
+                "type": "num"
+            },
+            {
+                "label": "3",
+                "value": 3,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "pasillo",
+        "topicType": "str",
+        "className": "",
+        "x": 270,
+        "y": 180,
+        "wires": [
+            [
+                "abb9f6d165762d89"
+            ]
+        ]
+    },
+    {
+        "id": "9db4a9c9a1fcd9b6",
+        "type": "ui_text",
+        "z": "fe1b7911ce97188e",
+        "group": "47830fe12cf82a89",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Utilizar cuando se quiera introducir un código nuevo",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 410,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "9697028b9c24349e",
+        "type": "ui_dropdown",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "label": "Altura Balda",
+        "tooltip": "",
+        "place": "Elige la altura de la balda",
+        "group": "47830fe12cf82a89",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Abajo",
+                "value": "Abajo",
+                "type": "str"
+            },
+            {
+                "label": "Arriba",
+                "value": "Arriba",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "altura_balda",
+        "topicType": "str",
+        "className": "",
+        "x": 290,
+        "y": 300,
+        "wires": [
+            [
+                "abb9f6d165762d89"
+            ]
+        ]
+    },
+    {
+        "id": "19d74f7f1d0ac5e6",
+        "type": "ui_dropdown",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "label": "Nº de Balda",
+        "tooltip": "",
+        "place": "Elige el numero de balda",
+        "group": "47830fe12cf82a89",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "1",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "2",
+                "value": 2,
+                "type": "num"
+            },
+            {
+                "label": "3",
+                "value": 3,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "nbalda",
+        "topicType": "str",
+        "className": "",
+        "x": 290,
+        "y": 260,
+        "wires": [
+            [
+                "abb9f6d165762d89"
+            ]
+        ]
+    },
+    {
+        "id": "3a44fd2321d4fd98",
+        "type": "ui_button",
+        "z": "fe1b7911ce97188e",
+        "name": "Enviar Datos",
+        "group": "47830fe12cf82a89",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Enviar",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "send",
+        "topicType": "str",
+        "x": 170,
+        "y": 440,
+        "wires": [
+            [
+                "843904c96894597c"
+            ]
+        ]
+    },
+    {
+        "id": "abb9f6d165762d89",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "Almacenar Entradas",
+        "func": "if (msg.topic === 'pasillo') {\n    flow.set('pasillo', msg.payload);\n} else if (msg.topic === 'IzqDer') {\n    flow.set('IzqDer', msg.payload);\n}else if (msg.topic === 'nbalda') {\n    flow.set('nbalda', msg.payload);\n}else if (msg.topic === 'altura_balda') {\n    flow.set('altura_balda', msg.payload);\n}else if (msg.topic === 'prueba') {\n    flow.set('prueba', msg.payload);\n}\n\n\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6670bc76535c0409",
+        "type": "debug",
+        "z": "fe1b7911ce97188e",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "843904c96894597c",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "Coger datos de UI",
+        "func": "msg.topic = \"datos_codigo_nuevo\"\nvar pasillo = flow.get('pasillo');\nvar IzqDer = flow.get('IzqDer');\nvar nbalda = flow.get('nbalda');\nvar altura_balda = flow.get('altura_balda');\nvar posgaveta = flow.get('prueba');\nvar codigo = flow.get('code')\n\n\n msg.payload = {\n    codigo,\n    pasillo,\n    IzqDer,\n    nbalda,\n    altura_balda,\n    posgaveta\n }\n\nreturn msg",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 440,
+        "wires": [
+            [
+                "2362a125541814bc"
+            ]
+        ]
+    },
+    {
+        "id": "1eb974cddad47a5b",
+        "type": "ui_dropdown",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "label": "Posición Gaveta",
+        "tooltip": "",
+        "place": "Posición Gaveta",
+        "group": "47830fe12cf82a89",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "1",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "2",
+                "value": 2,
+                "type": "num"
+            },
+            {
+                "label": "3",
+                "value": 3,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "prueba",
+        "topicType": "str",
+        "className": "",
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "abb9f6d165762d89"
+            ]
+        ]
+    },
+    {
+        "id": "2133376320700629",
+        "type": "ui_text_input",
+        "z": "fe1b7911ce97188e",
+        "name": "Codigo Barras",
+        "label": "Codigo Barras",
+        "tooltip": "Dataset",
+        "group": "47830fe12cf82a89",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "text",
+        "delay": "10",
+        "topic": "code",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 300,
+        "y": 40,
+        "wires": [
+            [
+                "589679f7a8791048"
+            ]
+        ]
+    },
+    {
+        "id": "589679f7a8791048",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "Almacenar Entradas",
+        "func": "if (msg.topic === 'code') {\n    flow.set('code', msg.payload);\n}\nreturn null;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2b22ae2e7991e612",
+        "type": "file in",
+        "z": "fe1b7911ce97188e",
+        "name": "CSV alturas",
+        "filename": "/home/sistemas/codigo-alturas/Ref-posiciones.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 290,
+        "y": 540,
+        "wires": [
+            [
+                "b742ae4457a6c135"
+            ]
+        ]
+    },
+    {
+        "id": "b742ae4457a6c135",
+        "type": "csv",
+        "z": "fe1b7911ce97188e",
+        "name": "Paso a json",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "codigo, x, y, z, posMIR",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 370,
+        "y": 660,
+        "wires": [
+            [
+                "efe90406beb38a5b"
+            ]
+        ]
+    },
+    {
+        "id": "efe90406beb38a5b",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "Dar msg.topic",
+        "func": "msg.topic = \"csv_referencia\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 580,
+        "wires": [
+            [
+                "2362a125541814bc"
+            ]
+        ]
+    },
+    {
+        "id": "2362a125541814bc",
+        "type": "join",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 630,
+        "y": 500,
+        "wires": [
+            [
+                "b00e45b6c3adf868"
+            ]
+        ]
+    },
+    {
+        "id": "e8b2a1221a63e910",
+        "type": "inject",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 520,
+        "wires": [
+            [
+                "2b22ae2e7991e612",
+                "f8c4dd4caa4e808f"
+            ]
+        ]
+    },
+    {
+        "id": "b00e45b6c3adf868",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "Buscar fila datos",
+        "func": "msg.topic = \"datos\";\n// Extraemos los valores de la selección del usuario.\nvar eleccionIzqDer = msg.payload.datos_codigo_nuevo.payload.IzqDer;\nvar eleccionAltura = msg.payload.datos_codigo_nuevo.payload.altura_balda;\nvar posgaveta = msg.payload.datos_codigo_nuevo.payload.posgaveta;\n\n// Buscamos en los datos del CSV.\nvar datosCSV = msg.payload.csv_referencia.payload;\nvar resultado = datosCSV.find(function(item) {\n    return item.IzqDer === eleccionIzqDer && item.Altura.trim() === eleccionAltura;\n});\n\n// Si se encuentra un resultado, lo preparamos para la salida.\nif (resultado) {\n    msg.payload = {\n        codigo: msg.payload.datos_codigo_nuevo.payload.codigo,\n        x: resultado.x,\n        y: resultado.y,\n        z: resultado.z,\n        rx: resultado.rx,\n        ry: resultado.ry,\n        rz: resultado.rz,\n        izq0der1: resultado.izq0der1,\n        posMIR: -1 - (0.3 * (posgaveta - 1)),\n        pasillo: msg.payload.datos_codigo_nuevo.payload.pasillo\n    };\n} else {\n    // Manejo del caso en que no se encuentre un resultado.\n    msg.payload = { error: \"No se encontró una coincidencia en el CSV.\" };\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 500,
+        "wires": [
+            [
+                "e3d5d8ffeaac7367"
+            ]
+        ]
+    },
+    {
+        "id": "6a39d1ee49a55304",
+        "type": "csv",
+        "z": "fe1b7911ce97188e",
+        "name": "Paso a json",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "codigo, x, y, z, posMIR",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 470,
+        "y": 780,
+        "wires": [
+            [
+                "d669b07c4ad2cfca"
+            ]
+        ]
+    },
+    {
+        "id": "f8c4dd4caa4e808f",
+        "type": "file in",
+        "z": "fe1b7911ce97188e",
+        "name": "CSV codigos y posiciones",
+        "filename": "/home/sistemas/codigos_pos.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 310,
+        "y": 720,
+        "wires": [
+            [
+                "6a39d1ee49a55304"
+            ]
+        ]
+    },
+    {
+        "id": "d669b07c4ad2cfca",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "Buscar último codeID",
+        "func": "msg.topic = \"csv_codigos\";\nlet datos = msg.payload;\n\n// Obtenemos el último objeto del array.\nlet ultimoObjeto = datos[datos.length - 1];\n\n// Obtenemos el codeID del último objeto y le sumamos 1.\nlet nuevoCodeID = ultimoObjeto.codeID + 1;\nlet codigo = ultimoObjeto.codigo\n\nmsg.payload = {\n    nuevoCodeID,\n    codigo}\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 680,
+        "wires": [
+            [
+                "e3d5d8ffeaac7367"
+            ]
+        ]
+    },
+    {
+        "id": "e2efbefa156e6a22",
+        "type": "comment",
+        "z": "fe1b7911ce97188e",
+        "name": "Flow para código nuevo",
+        "info": "",
+        "x": 220,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e3d5d8ffeaac7367",
+        "type": "join",
+        "z": "fe1b7911ce97188e",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "",
+        "propertyType": "full",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 990,
+        "y": 600,
+        "wires": [
+            [
+                "8486cf7d4c007b91"
+            ]
+        ]
+    },
+    {
+        "id": "8486cf7d4c007b91",
+        "type": "function",
+        "z": "fe1b7911ce97188e",
+        "name": "function 2",
+        "func": "let codeID = msg.payload.csv_codigos.payload.nuevoCodeID;\nlet datos = msg.payload.datos.payload;\n\n// Creamos el string con los datos en el orden especificado\nlet linea = [\n    datos.codigo,\n    datos.x,\n    datos.y,\n    datos.z,\n    datos.rx,\n    datos.ry,\n    datos.rz,\n    datos.izq0der1,\n    datos.posMIR,\n    datos.pasillo,\n    codeID\n].join(',');\n\nmsg.payload = linea;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 600,
+        "wires": [
+            [
+                "6670bc76535c0409",
+                "6351b1d34f09ad01"
+            ]
+        ]
+    },
+    {
+        "id": "6351b1d34f09ad01",
+        "type": "file",
+        "z": "fe1b7911ce97188e",
+        "name": "Guardar en CSV",
+        "filename": "/home/sistemas/codigos_pos.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1360,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0ab9262eb6f5e9c8",
+        "type": "ui_text",
+        "z": "fe1b7911ce97188e",
+        "group": "47830fe12cf82a89",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "NO MODIFICAR CÓDIGOS YA REGISTRADOS",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 400,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "092bceeb9f18a314",
+        "type": "ui_spacer",
+        "z": "fe1b7911ce97188e",
+        "name": "spacer",
+        "group": "373da8bfe2ebb09f",
+        "order": 4,
+        "width": "1",
+        "height": "1"
+    },
+    {
+        "id": "47830fe12cf82a89",
+        "type": "ui_group",
+        "name": "Posición código",
+        "tab": "f388870d80f45846",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "373da8bfe2ebb09f",
+        "type": "ui_group",
+        "name": "Recogida de gavetas vacías",
+        "tab": "f388870d80f45846",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f388870d80f45846",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
