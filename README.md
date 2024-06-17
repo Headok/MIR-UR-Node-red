@@ -34,7 +34,7 @@ https://portal.influxdata.com/downloads/
 ### Grafana
 https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
 
-##Scritp cámara + programa UR + archivo pinza
+## Scritp cámara + programa UR + archivo pinza
 ### Script cámara
 xxx
 ### Programa UR
