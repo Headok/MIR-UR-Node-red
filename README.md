@@ -4,12 +4,16 @@ Este repositorio contiene todo lo necesario para automatizar la recogida de gave
 
 El MIR y el UR5 se comunican mediante el urcap desarrollado por MIR (no es 100% estable).
 ## Funcionamiento básico
-La información de las distintas posiciones de las gavetas se guarda en un CSV. Al mandar una misión de recogida de gaveta, se leerá el código de barras que lleva la gaveta. Con ese código, usando node-red, se entra en el CSV, y se sacan los datos de posición de la gaveta, así como el punto donde el UR tiene que empezar a hacer el movimiento de dejada.
+La información de las distintas posiciones de las gavetas se guarda en un CSV (codigos_pos.csv). Al mandar una misión de recogida de gaveta, se leerá el código de barras que lleva la gaveta. Con ese código, usando node-red, se entra en el CSV, y se sacan los datos de posición de la gaveta, así como el punto donde el UR tiene que empezar a hacer el movimiento de dejada.
+![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/9e1daad4-2d21-4ced-a4b0-0001171aad62)
+
 Todo este procedimiento se lleva a cabo con node-red.
+![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/51217ddb-89f7-42c1-ad83-1067bb3612a4)
+
 Para no mandar información repetida/errónea, se comprueba que el nº de missión en el MIR haya cambiado (mission_queue_id), así como un registro que nos informa del momento de la misión en el que estamos.
-A su vez, para poder colocar una gaveta encima de otra en la misma posición, se lleva un control del número de gavetas apiladas.
+A su vez, para poder colocar una gaveta encima de otra en la misma posición, se lleva un control del número de gavetas apiladas (alturas.csv).
 También incluye un flujo de trabajo para recoger gavetas vacías en un puesto de trabajo y dejarlas para la recogida de suministradores.
-Por último, se ha automatizado en jira que al mover las etiquetas de una columna a otra
+Por último, se ha automatizado en jira que al mover las etiquetas de una columna a otra comience la misión de recoger gaveta.
 Todo esto se encuentra en proceso_codigo_v1_5.json
 
 ## Flujos secundarios
