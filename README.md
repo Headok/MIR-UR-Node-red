@@ -3,7 +3,7 @@ Este repositorio contiene todo lo necesario para automatizar la recogida de gave
 ![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/60793ad3-2bda-414e-be08-b394ea9562f7)
 
 El MIR y el UR5 se comunican mediante el urcap desarrollado por MIR (no es 100% estable).
-##Funcionamiento básico
+## Funcionamiento básico
 La información de las distintas posiciones de las gavetas se guarda en un CSV. Al mandar una misión de recogida de gaveta, se leerá el código de barras que lleva la gaveta. Con ese código, usando node-red, se entra en el CSV, y se sacan los datos de posición de la gaveta, así como el punto donde el UR tiene que empezar a hacer el movimiento de dejada.
 Todo este procedimiento se lleva a cabo con node-red.
 Para no mandar información repetida/errónea, se comprueba que el nº de missión en el MIR haya cambiado (mission_queue_id), así como un registro que nos informa del momento de la misión en el que estamos.
@@ -21,6 +21,7 @@ Existen otros flujos secundarios para realizar otro tipo de tareas.
 
 ## Instalaciones
 *Todo funciona sobre ubuntu 22.04, puede hacerse sobre Windows, pero de cara a futuro, se considera más óptimo Linux.
+
 **Se recomienda trabajar sobre un entorno virtual para la instalación de bibliotecas de python si fuera necesario.
 ### Node Red
 https://nodered.org/docs/getting-started/local
