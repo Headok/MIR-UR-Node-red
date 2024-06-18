@@ -23,9 +23,15 @@ Existen otros flujos secundarios para realizar otro tipo de tareas.
 3. nueva_gaveta_almacen: Flujo para crear nuevas posiciones en el csv.
 4. codigo_altura_v1_3: Flujo para comprobar las gavetas con un mismo código apiladas en una posición.
 
+## Material usado
+* UR5e
+* MIR100
+* Intel Real Sense D435i (para esta fase de proyecto valdría una webcam más sencilla.
+* VM Ubuntu 22.04
+  De cara a futuro,  se espera usar una jetson nano para embarcarla en el mir100 y hacer ahí todo el procesamiento.
+
 ## Instalaciones
 *Todo funciona sobre ubuntu 22.04, puede hacerse sobre Windows, pero de cara a futuro, se considera más óptimo Linux.
-
 **Se recomienda trabajar sobre un entorno virtual para la instalación de bibliotecas de python si fuera necesario.
 ### Node Red
 https://nodered.org/docs/getting-started/local
@@ -36,11 +42,12 @@ https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/
 
 ## Scritp cámara + programa UR + archivo pinza
 ### Script cámara
-xxx
+Camara01.py
 ### Programa UR
-xxx
+Programa_UR5_Gavetas.urp
 ### Archivo pinza
-xxx
+UTIL_GAVETAS_V2.stl
+
 
 
 
