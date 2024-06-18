@@ -1,8 +1,9 @@
 # MIR-UR-Node-red
-Este repositorio contiene todo lo necesario para automatizar la recogida de gavetas desde un punto, y dejarlas en su correspondiente posición en un almacén, mediante el uso de un MIR100. un UR5 y una pinza impresa con filamento.
+Este repositorio contiene todo lo necesario para automatizar la recogida de gavetas desde un punto, y dejarlas en su correspondiente posición en un almacén, mediante el uso de un MIR100, un UR5, cámara y una pinza impresa con filamento.
 ![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/60793ad3-2bda-414e-be08-b394ea9562f7)
 
-El MIR y el UR5 se comunican mediante el urcap desarrollado por MIR (no es 100% estable).
+El MIR y el UR5 se comunican mediante el urcap desarrollado por MIR (no es 100% estable, pero se ha superado este problema con distintos bucles en el programa del Ur5).
+
 ## Funcionamiento básico
 La información de las distintas posiciones de las gavetas se guarda en un CSV (codigos_pos.csv). Al mandar una misión de recogida de gaveta, se leerá el código de barras que lleva la gaveta. Con ese código, usando node-red, se entra en el CSV, y se sacan los datos de posición de la gaveta, así como el punto donde el UR tiene que empezar a hacer el movimiento de dejada.
 ![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/9e1daad4-2d21-4ced-a4b0-0001171aad62)
@@ -47,6 +48,8 @@ Camara01.py
 Programa_UR5_Gavetas.urp
 ### Archivo pinza
 UTIL_GAVETAS_V2.stl
+![imagen](https://github.com/Headok/MIR-UR-Node-red/assets/124361989/f483a78e-9340-49ee-9349-e3ebaa02c934)
+
 
 
 
