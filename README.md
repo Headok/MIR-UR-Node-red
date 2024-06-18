@@ -29,6 +29,7 @@ Existen otros flujos secundarios para realizar otro tipo de tareas.
 * MIR100
 * Intel Real Sense D435i (para esta fase de proyecto valdría una webcam más sencilla.
 * VM Ubuntu 22.04
+  
   De cara a futuro,  se espera usar una jetson nano para embarcarla en el mir100 y hacer ahí todo el procesamiento.
 
 ## Instalaciones
